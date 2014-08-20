@@ -2,7 +2,36 @@
 
 An iSign advertiser utility for deploying on a raspberry pi
 
+## What's an iSign
 
+An iSign is an iBeacon advertisement which is augmented with a service id that points to where the service advertised by the beacon can be accessed.
+
+Many iBeacon motes already advertise additional information by extending the iBeacon advertisement. They usually store a common name for the device to simplify mote admin UI's.
+
+Extended iBeacons are fully compatible with iOS and MAC OS X.
+
+## What use is an iSign
+
+Apple's vision for iBeacons is focused on retailers and results in a model where one UUID ==> One App ==> One Retailer.
+
+An alternative vision for iBeacons focuses on Consumers and results in a model where one point-of-interest ==> one UUID ==> many providers of the POI.
+
+A user expresses an interest in a service or brand, e.g. "Food", the interest is hashed to generate a 128bit UUID.
+
+This UUID is used to look for iBeacon advertisements with a matching UUID.
+
+A plain iBeacon advertisement would use the Major/Minor numbers as a key to lookup a particular provider of the interest, in this case "Food". The lookup will take place via a centrally hosted service.
+
+If the advertisement is an iSign (iBeacon with extended data), the major/minor (4 bytes) plus an additional 28bytes (total 32 bytes) represent the public key of an elliptical-key-cryptogrophy public/private key pair.
+
+This key can be used to securely connect to the service provider via a p2p/mesh network without the need to access a centrally hosted lookup service.
+
+## Other uses
+
+You can use the approach taken by iSign to extend iBeacon advertisements with your own metadata to create more intelligent apps. 
+
+These extended iBeacon advertisements are fully compatible with iOS and MAC OS X core location and core bluetooth frameworks.
+ 
 ## Building from source
 
 iSign has been tested on a Raspberry Pi B and B+
