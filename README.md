@@ -1,6 +1,6 @@
-# iSign-advertiser-rpi
+# isign-bluez
 
-An iSign advertiser utility for deploying on a raspberry pi
+An iSign advertiser utility for deploying on a linux machine running the Bluez Bloutooth stack. It has been tested on a Raspberry Pi.
 
 ## What's an iSign
 
