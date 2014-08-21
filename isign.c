@@ -13,6 +13,7 @@
 #define cmd_opcode_pack(ogf, ocf) (uint16_t)((ocf & 0x03ff)|(ogf << 10))
 
 #define EIR_FLAGS                   0X01
+#define EIR_INCOMP_16BIT_UUID       0x02
 #define EIR_NAME_SHORT              0x08
 #define EIR_NAME_COMPLETE           0x09
 #define EIR_MANUFACTURE_SPECIFIC    0xFF
@@ -188,7 +189,7 @@ if (strlen(public_key)/2 != 32) {
   segment_length = 0;
 
   scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(0x1E); segment_length++;
-  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(EIR_MANUFACTURE_SPECIFIC); segment_length++;
+  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(EIR_INCOMP_16BIT_UUID); segment_length++;
 
   for(i=3; i<strlen(public_key)/2; i++)
   {
