@@ -31,6 +31,8 @@ This key can be used to securely connect to the service provider via a p2p/mesh 
 You can use the approach taken by iSign to extend iBeacon advertisements with your own metadata to create more intelligent apps. 
 
 These extended iBeacon advertisements are fully compatible with iOS and MAC OS X core location and core bluetooth frameworks.
+
+A binary is included in the project 'ibeacon-extended' that lets you try this out'
  
 ## Building from source
 
@@ -50,8 +52,26 @@ After installing Bluez you can make the isign binary
 make
 ```
 
-To run the isign binary use the following command line:
+The ibeacon-extended binary has the following usage:
 
 ```
-isign 100 e2c56db5dffb48d2b060d0f5a71096e0 10 11 -50
+ibeacon-extended <advertisement time in ms> <UUID 16 bytes> <major number> <minor number> <RSSI calibration amount> [<scan data max 31 bytes>]
 ```
+
+To add a custom device name of MyBeacon, you can use the following example:
+```
+sudo ./ibeacon-extended 100 e2c56db5dffb48d2b060d0f5a71096e0 10 100 -29 13094d79426561636f6e00000000000000000000
+```
+
+The isign binary has the following usage:
+
+```
+isign <advertisement time in ms> <UUID 16 bytes> <Public Key 32bytes> <RSSI calibration amount>
+```
+
+To advertise a public key, you can use the following example:
+```
+sudo ./isign 100 e2c56db5dffb48d2b060d0f5a71096e0 a71096e0dffb48d2e2c56db5b060d0f5dffb48d2b060d0f5a71096e0e2c56db5 -29
+```
+
+

@@ -41,7 +41,7 @@ unsigned int twoc(int in, int t)
   return (in < 0) ? (in + (2 << (t-1))) : in;
 }
 
-int enable_advertising(int advertising_interval, char *advertising_uuid, char *public_key, int rssi_value)
+int enable_advertising(int advertising_interval, char *advertising_uuid, int major_number, int minor_number, int rssi_value, char *eir_scan_data)
 {
 
 if (strlen(advertising_uuid)/2 != 16) {
@@ -49,8 +49,8 @@ if (strlen(advertising_uuid)/2 != 16) {
     exit(1);
 }
 
-if (strlen(public_key)/2 != 32) {
-  fprintf(stderr, "public key must be 32 bytes entered as a HEX string\n");
+if (eir_scan_data != NULL && strlen(eir_scan_data)/2 > 31) {
+  fprintf(stderr, "optional scan data must be a maximum of 31 bytes entered as a HEX string\n");
     exit(1);
 }
   int device_id = hci_get_route(NULL);
@@ -125,8 +125,6 @@ if (strlen(public_key)/2 != 32) {
   adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(0x15); segment_length++;
 
   unsigned int *uuid = hex_str_to_data(advertising_uuid);
-  unsigned int *key = hex_str_to_data(public_key);
-
   int i;
   for(i=0; i<strlen(advertising_uuid)/2; i++)
   {
@@ -134,19 +132,12 @@ if (strlen(public_key)/2 != 32) {
   }
 
   // Major number
-//  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(major_number >> 8 & 0x00FF); segment_length++;
- // adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(major_number & 0x00FF); segment_length++;
-
-  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[0]); segment_length++;
-  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[1]); segment_length++;
+  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(major_number >> 8 & 0x00FF); segment_length++;
+  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(major_number & 0x00FF); segment_length++;
 
   // Minor number
-
-  //adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(minor_number >> 8 & 0x00FF); segment_length++;
-  //adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(minor_number & 0x00FF); segment_length++;
-
-  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[2]); segment_length++;
-  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[3]); segment_length++;
+  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(minor_number >> 8 & 0x00FF); segment_length++;
+  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(minor_number & 0x00FF); segment_length++;
 
   // RSSI calibration
   adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(twoc(rssi_value, 8)); segment_length++;
@@ -181,18 +172,17 @@ if (strlen(public_key)/2 != 32) {
 
   //Setup scan response data
 
+if (eir_scan_data != NULL) {
 
   le_set_scan_response_data_cp scan_data_cp;
   memset(&scan_data_cp, 0, sizeof(scan_data_cp));
 
+  unsigned int *scandata = hex_str_to_data(eir_scan_data);
   segment_length = 0;
-
-  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(0x1E); segment_length++;
-  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(EIR_MANUFACTURE_SPECIFIC); segment_length++;
-
-  for(i=3; i<strlen(public_key)/2; i++)
+  int i;
+  for(i=0; i<strlen(eir_scan_data)/2; i++)
   {
-    scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(key[i]); segment_length++;
+    scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(scandata[i]); segment_length++;
   }
 
   scan_data_cp.length = segment_length;
@@ -221,6 +211,7 @@ if (strlen(public_key)/2 != 32) {
     return(1);
   }
 
+}
 
   hci_close_dev(device_handle);
 }
@@ -275,10 +266,12 @@ void ctrlc_handler(int s)
 void main(int argc, char **argv)
 {
   int rc = 0;
-  if(argc == 5) {
-    rc = enable_advertising(atoi(argv[1]), argv[2], argv[3], atoi(argv[4]));
+  if(argc == 6) {
+    rc = enable_advertising(atoi(argv[1]), argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),NULL);
+  } else if (argc == 7) {
+    rc = enable_advertising(atoi(argv[1]), argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),argv[6]);
   } else {
-    fprintf(stderr, "Usage: %s <advertisement time in ms> <UUID 16 bytes> <Public Key 32bytes> <RSSI calibration amount>\n", argv[0]);
+    fprintf(stderr, "Usage: %s <advertisement time in ms> <UUID 16 bytes> <major number> <minor number> <RSSI calibration amount> [<scan data max 31 bytes>]\n", argv[0]);
     exit(1);
   }
 
