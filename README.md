@@ -24,7 +24,7 @@ A plain iBeacon advertisement would use the Major/Minor numbers as a key to look
 
 If the advertisement is an iSign (iBeacon with extended data), the major/minor (4 bytes) plus an additional 28bytes (total 32 bytes) represent the public key of an elliptical-key-cryptogrophy public/private key pair.
 
-This key can be used to securely connect to the service provider via a p2p/mesh network without the need to access a centrally hosted lookup service.
+This key can be used to securely connect to the service provider over a network without the need to access a centrally hosted lookup service.
 
 ## Other uses
 
