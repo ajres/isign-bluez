@@ -10,6 +10,8 @@ Many iBeacon motes already advertise additional information by extending the iBe
 
 Extended iBeacons are fully compatible with iOS and MAC OS X.
 
+![iSign Payload](isignpayload.png)
+
 ## What use is an iSign
 
 Apple's vision for iBeacons is focused on retailers and results in a model where one UUID ==> One App ==> One Retailer.
