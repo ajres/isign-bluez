@@ -34,7 +34,7 @@ You can use the approach taken by iSign to extend iBeacon advertisements with yo
 
 These extended iBeacon advertisements are fully compatible with iOS and MAC OS X core location and core bluetooth frameworks.
 
-A binary is included in the project 'ibeacon-extended' that lets you try this out'
+A binary is included in the project 'ibeacon-extended' that lets you try this out
 
 The extended data must be formatted as Bluetooth 4.0 Advertisments, see BT 4.0 spec for details
  
