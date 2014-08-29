@@ -13,7 +13,7 @@
 #define cmd_opcode_pack(ogf, ocf) (uint16_t)((ocf & 0x03ff)|(ogf << 10))
 
 #define EIR_FLAGS                   0X01
-#define EIR_INCOMP_16BIT_UUID       0x02
+#define EIR_COMP_16BIT_UUID         0x03
 #define EIR_NAME_SHORT              0x08
 #define EIR_NAME_COMPLETE           0x09
 #define EIR_MANUFACTURE_SPECIFIC    0xFF
@@ -135,17 +135,10 @@ if (strlen(public_key)/2 != 32) {
   }
 
   // Major number
-//  adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(major_number >> 8 & 0x00FF); segment_length++;
- // adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(major_number & 0x00FF); segment_length++;
-
   adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[0]); segment_length++;
   adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[1]); segment_length++;
 
   // Minor number
-
-  //adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(minor_number >> 8 & 0x00FF); segment_length++;
-  //adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(minor_number & 0x00FF); segment_length++;
-
   adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[2]); segment_length++;
   adv_data_cp.data[adv_data_cp.length + segment_length] = htobs(key[3]); segment_length++;
 
@@ -181,17 +174,15 @@ if (strlen(public_key)/2 != 32) {
   }
 
   //Setup scan response data
-
-
   le_set_scan_response_data_cp scan_data_cp;
   memset(&scan_data_cp, 0, sizeof(scan_data_cp));
 
   segment_length = 0;
 
-  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(0x1E); segment_length++;
-  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(EIR_INCOMP_16BIT_UUID); segment_length++;
+  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(0x1D); segment_length++;
+  scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(EIR_COMP_16BIT_UUID); segment_length++;
 
-  for(i=3; i<strlen(public_key)/2; i++)
+  for(i=4; i<strlen(public_key)/2; i++)
   {
     scan_data_cp.data[scan_data_cp.length + segment_length] = htobs(key[i]); segment_length++;
   }
